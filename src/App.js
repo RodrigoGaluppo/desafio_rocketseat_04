@@ -26,36 +26,28 @@ export default function App() {
     },[])
  
     
-    async function handleAddProject(){
-        const response = await api.post('projects',{
-            title:`projeto ${Date.now()}`,
-            owner:'wennedes'
-        })
+    
+           
+        
 
-        setProjects([...projects,response.data])
-    }
+        
+    
 
   async function handleLikeRepository(id) {
     
-      let item = await api.post(`repositories/${id}/like`)
+      await api.post(`repositories/${id}/like`)
      
 
-      const repository = {
-        id:item.data.id,
-        title:item.data.title,
-        url:item.data.url,
-        techs:item.data.techs,
-        likes:item.data.likes
-      }
-      
-      let oldProject = projects.filter(repo=>repo.id == id)
-
-      projects[projects.indexOf(oldProject[0])] = item.data
-      console.log(projects[projects.indexOf(oldProject[0])])
-      
-      
-     
-      
+      const NewRepo = projects.map(item=>{
+        if(item.id == id){
+          item.likes += 1
+          return item
+        }else{
+          return item
+        }
+      })
+         
+      setProjects(NewRepo)
   }
 
   return (
@@ -82,7 +74,7 @@ export default function App() {
                 // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
                 testID={`repository-likes-${item.id}`}
               >
-                {item.likes} curtida
+                {item.likes} curtidas
               </Text>
             </View>
 
@@ -92,7 +84,7 @@ export default function App() {
               // Remember to replace "1" below with repository ID: {`like-button-${repository.id}`}
               testID={`like-button-${item.id}`}
             >
-              <Text style={styles.buttonText}>Curtir {item.id} </Text>
+              <Text style={styles.buttonText}>Curtir</Text>
             </TouchableOpacity>
           </View>
         )}
